@@ -1,4 +1,6 @@
 const path = require('path');
+const webpack = require('webpack');
+const Dotenv = require('dotenv-webpack');
 
 module.exports = {
   mode: 'development',
@@ -6,9 +8,21 @@ module.exports = {
   output: {
     filename: 'bundle.js',
     path: path.resolve(__dirname, 'dist'),
-    publicPath: 'dist',
+    publicPath: '/dist',
   },
-  devtool: 'inline-source-map',
+  devServer: {
+    static: [
+      {
+        directory: path.resolve(__dirname, 'dist'),
+        publicPath: '/dist',
+      },
+      {
+        directory: __dirname,
+        publicPath: '/',
+      },
+    ],
+  },
+  devtool: 'eval',
   module: {
     rules: [
       {
@@ -19,6 +33,17 @@ module.exports = {
     ],
   },
   resolve: {
-    extensions: ['.ts', '.js'],
+    extensions: ['.ts', '.js', '.json', '.env'],
+    fallback: {
+      fs: false,
+      path: false,
+    },
   },
+  // Setting Google API Key
+  plugins: [
+    new Dotenv(),
+    new webpack.DefinePlugin({
+      'process.env.GOOGLE_API_KEY': JSON.stringify(process.env.GOOGLE_API_KEY),
+    }),
+  ],
 };
