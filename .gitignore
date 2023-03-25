@@ -1,2 +1,5 @@
+# ignore_directory
+node_modules
 # ignore_file
 package-lock.json
+.env
